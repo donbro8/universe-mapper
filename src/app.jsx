@@ -637,11 +637,14 @@ function App() {
 
     Promise.all(svgJobs).then(() => {
       // Draw HTML text elements (captions) — convert screen positions to virtual coords
+      // Note: getComputedStyle returns CSS px (virtual coords, unaffected by CSS transforms),
+      // while getBoundingClientRect returns screen px (scaled by CSS transform).
+      // So positions need toVirt(), but font-size and letter-spacing do NOT.
       stageInner.querySelectorAll('.node-label, .node-sub, .node-mono').forEach((el) => {
         const rect = el.getBoundingClientRect();
         const elCs = getComputedStyle(el);
         const x = toVirt(rect.left - stageRect.left + rect.width / 2);
-        const fontSize = toVirt(parseFloat(elCs.fontSize));
+        const fontSize = parseFloat(elCs.fontSize);
         const y = toVirt(rect.top - stageRect.top) + HEADER_H + fontSize * 0.85;
         const italic = elCs.fontStyle === 'italic' ? 'italic ' : '';
         const weight = elCs.fontWeight !== '400' && elCs.fontWeight !== 'normal' ? elCs.fontWeight + ' ' : '';
@@ -649,7 +652,7 @@ function App() {
         ctx.textAlign = 'center';
         ctx.fillStyle = resolveColor(elCs.color);
         ctx.globalAlpha = parseFloat(elCs.opacity) || 1;
-        const spacing = toVirt(parseFloat(elCs.letterSpacing) || 0);
+        const spacing = parseFloat(elCs.letterSpacing) || 0;
         ctx.letterSpacing = spacing + 'px';
         ctx.fillText(el.textContent, x, y);
       });
