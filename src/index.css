@@ -374,7 +374,7 @@ input[type="range"]::-moz-range-thumb {
   border-color: var(--gold);
 }
 .export-btn {
-  margin-left: 16px;
+  margin-left: 0;
   font-style: italic;
 }
 .chip-toggle {
@@ -473,14 +473,15 @@ input[type="range"]::-moz-range-thumb {
     font-size: 11px;
   }
   .bottom-bar {
-    padding: 8px 8px 16px;
+    padding: 8px 4px 16px;
   }
   .controls {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
     padding: 12px 14px;
-    max-width: 100vw;
+    max-width: calc(100vw - 8px);
+    box-sizing: border-box;
   }
   .ctrl-group {
     padding: 0 0 10px;
@@ -491,11 +492,25 @@ input[type="range"]::-moz-range-thumb {
     border-bottom: none;
     padding-bottom: 0;
   }
+  .ctrl-label {
+    min-width: 40px;
+    font-size: 8.5px;
+  }
+  .ctrl-row {
+    flex-wrap: wrap;
+  }
   input[type="range"] {
-    width: 100px;
+    width: 90px;
+    flex: 1;
+    min-width: 60px;
   }
   .ctrl-chips {
     flex-wrap: wrap;
+  }
+  .export-btn {
+    width: 100%;
+    text-align: center;
+    padding: 6px 12px;
   }
 }
 

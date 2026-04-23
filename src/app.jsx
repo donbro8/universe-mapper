@@ -68,7 +68,7 @@ function pad(n, w = 2) {
   return String(n).padStart(w, '0');
 }
 
-function Controls({ state, setState, tweaks, setTweak }) {
+function Controls({ state, setState, tweaks, setTweak, onExport }) {
   const { date, lat, lon } = state;
   const d = new Date(date);
 
@@ -195,6 +195,13 @@ function Controls({ state, setState, tweaks, setTweak }) {
               ))}
             </div>
           </div>
+          {onExport && (
+            <div className="ctrl-row">
+              <button className="chip export-btn" onClick={onExport} title="Export as PNG">
+                Export ↗
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -700,10 +707,7 @@ function App() {
       <Scene state={state} setState={setState} tweaks={tweaks} />
 
       <div className="bottom-bar">
-        <Controls state={state} setState={setState} tweaks={tweaks} setTweak={setTweak} />
-        <button className="chip export-btn" onClick={exportPNG} title="Open exportable view (save as PDF or image)">
-          Export
-        </button>
+        <Controls state={state} setState={setState} tweaks={tweaks} setTweak={setTweak} onExport={exportPNG} />
       </div>
     </div>
   );
