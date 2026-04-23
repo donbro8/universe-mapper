@@ -1,0 +1,7 @@
+- ensure all headings (and sub-headings) are aligned with each other: Human, earth, solar system, etc.
+- Make the constellations in the background accurate depictions of our actual night sky based on the date, time and location
+- Make the constellations in the background a little bit more obscure, maybe a lighter/more silver colour but still visible and bigger
+- Call it "The situation of a human" instead of A situatin of a person
+- And say "your when and where in the universe, recorded" instead of ...
+- Add a feature to allow the user to export the image into an svg - controls and tweaks should be excluded
+- incorporate the moon as part of the earth view as well. It should also be accurate with respect to date, time and location
