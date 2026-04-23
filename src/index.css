@@ -202,6 +202,15 @@ body::after {
   margin-top: 4px;
 }
 
+.custom-message {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  opacity: 0.9;
+}
+
 /* BOTTOM CONTROL BAR */
 .bottom-bar {
   z-index: 4;
