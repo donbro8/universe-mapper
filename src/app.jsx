@@ -71,6 +71,7 @@ function pad(n, w = 2) {
 function Controls({ state, setState, tweaks, setTweak, onExport }) {
   const { date, lat, lon } = state;
   const d = new Date(date);
+  const [showMessageInput, setShowMessageInput] = useState(!!state.message);
 
   const setDatePart = (part, val) => {
     const nd = new Date(date);
@@ -84,6 +85,47 @@ function Controls({ state, setState, tweaks, setTweak, onExport }) {
 
   return (
     <div className="controls">
+      {/* ── MESSAGE ── */}
+      <div className="ctrl-group">
+        <div className="ctrl-group-label">MESSAGE</div>
+        <div className="ctrl-row">
+          {!showMessageInput ? (
+            <button className="chip" onClick={() => setShowMessageInput(true)}>
+              + add message
+            </button>
+          ) : (
+            <div className="ctrl-inline">
+              <input
+                type="text"
+                className="ctrl-val-input"
+                style={{
+                  width: '160px',
+                  fontFamily: '"EB Garamond", serif',
+                  fontSize: '14px',
+                  fontStyle: 'italic',
+                  color: 'var(--ink)'
+                }}
+                maxLength={80}
+                placeholder="Optional message..."
+                value={state.message || ''}
+                onChange={(e) => setState({ ...state, message: e.target.value })}
+              />
+              <button
+                className="chip"
+                style={{ padding: '0 4px', fontSize: '14px', border: 'none', background: 'transparent' }}
+                onClick={() => {
+                  setShowMessageInput(false);
+                  setState({ ...state, message: '' });
+                }}
+                title="Remove message"
+              >
+                ×
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* ── WHEN ── */}
       <div className="ctrl-group">
         <div className="ctrl-group-label">WHEN</div>
@@ -425,6 +467,24 @@ function Scene({ state, setState, tweaks }) {
             <NodeUniverse size={positions[5].size} />
           </AxisNode>
         </div>
+
+        {/* CUSTOM MESSAGE */}
+        {state.message && (
+          <div
+            className="custom-message"
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              textAlign: 'center',
+              width: '100%',
+              zIndex: 10,
+            }}
+          >
+            {state.message}
+          </div>
+        )}
       </div>
 
     </div>
@@ -436,12 +496,21 @@ function App() {
   const [state, setState] = useState(() => {
     const stored = localStorage.getItem('universe-location:state');
     if (stored) {
-      try { return JSON.parse(stored); } catch (e) {}
+      try {
+        const parsed = JSON.parse(stored);
+        return {
+          date: parsed.date || new Date().toISOString(),
+          lat: parsed.lat || 40.7128,
+          lon: parsed.lon || -74.006,
+          message: parsed.message || '',
+        };
+      } catch (e) {}
     }
     return {
       date: new Date().toISOString(),
       lat: 40.7128,
       lon: -74.006,
+      message: '',
     };
   });
   useEffect(() => {
@@ -662,11 +731,21 @@ function App() {
       // Draw datestamp — export only, centred in the footer band
       const exportD = new Date(state.date);
       const datestamp = `${exportD.getUTCFullYear()}-${pad(exportD.getUTCMonth()+1)}-${pad(exportD.getUTCDate())} · ${pad(exportD.getUTCHours())}:${pad(exportD.getUTCMinutes())} UTC`;
+      
+      // Draw custom message right above datestamp
+      if (state.message) {
+        ctx.textAlign = 'center';
+        ctx.fillStyle = inkColor;
+        ctx.font = 'italic 22px "EB Garamond", serif';
+        ctx.letterSpacing = '1.76px'; // 0.08em of 22px
+        ctx.fillText(state.message, W / 2, HEADER_H + STAGE_H + FOOTER_H / 2 - 15);
+      }
+
       ctx.textAlign = 'center';
       ctx.fillStyle = inkSoftColor;
       ctx.font = 'italic 14px "EB Garamond", serif';
       ctx.letterSpacing = '1.4px';
-      ctx.fillText(datestamp, W / 2, HEADER_H + STAGE_H + FOOTER_H / 2 + 5);
+      ctx.fillText(datestamp, W / 2, HEADER_H + STAGE_H + FOOTER_H / 2 + 10);
       ctx.letterSpacing = '0px';
 
       // Download
